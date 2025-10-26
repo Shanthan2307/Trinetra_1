@@ -1,0 +1,124 @@
+
+> frontend@0.1.0 start
+> react-app-rewired start
+
+(node:43465) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+(node:43465) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(node:43465) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+
+Failed to compile.
+
+[eslint] 
+src/App.js
+  Line 142:26:  React Hook "useRef" is called conditionally. React Hooks must be called in the exact same order in every component render     react-hooks/rules-of-hooks
+  Line 143:29:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 144:29:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 145:37:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 146:43:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 147:37:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 148:39:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 149:50:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 150:50:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 151:33:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 152:49:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 156:51:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 157:41:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 158:35:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 168:28:  'setupStoryClient' is not defined                                                                                             no-undef
+  Line 178:32:  'zeroAddress' is not defined                                                                                                  no-undef
+  Line 179:36:  'zeroAddress' is not defined                                                                                                  no-undef
+  Line 193:24:  'zeroAddress' is not defined                                                                                                  no-undef
+  Line 194:19:  'zeroHash' is not defined                                                                                                     no-undef
+  Line 198:32:  'zeroAddress' is not defined                                                                                                  no-undef
+  Line 313:41:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 317:3:   React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+  Line 323:3:   React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+  Line 335:3:   React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+  Line 355:3:   React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+
+Search for the keywords to learn more about each error.
+WARNING in ./node_modules/asn1.js/lib/asn1/api.js 17:12-42
+Module not found: Error: Can't resolve 'vm' in '/Users/joker2307/Desktop/unagi/frontend/node_modules/asn1.js/lib/asn1'
+
+BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
+This is no longer the case. Verify if you need this module and configure a polyfill for it.
+
+If you want to include a polyfill, you need to:
+	- add a fallback 'resolve.fallback: { "vm": require.resolve("vm-browserify") }'
+	- install 'vm-browserify'
+If you don't want to include a polyfill, you can use an empty module like this:
+	resolve.fallback: { "vm": false }
+
+WARNING in [eslint] 
+src/App.js
+  Line 5:10:    'MapContainer' is defined but never used                                                                                                                                                                                                      no-unused-vars
+  Line 5:24:    'TileLayer' is defined but never used                                                                                                                                                                                                         no-unused-vars
+  Line 5:35:    'Marker' is defined but never used                                                                                                                                                                                                            no-unused-vars
+  Line 5:43:    'useMap' is defined but never used                                                                                                                                                                                                            no-unused-vars
+  Line 6:8:     'L' is defined but never used                                                                                                                                                                                                                 no-unused-vars
+  Line 120:9:   'currentAccount' is assigned a value but never used                                                                                                                                                                                           no-unused-vars
+  Line 224:13:  'HASH_nft' is assigned a value but never used                                                                                                                                                                                                 no-unused-vars
+  Line 225:13:  'HASH_IP' is assigned a value but never used                                                                                                                                                                                                  no-unused-vars
+  Line 313:10:  'selectedCam' is assigned a value but never used                                                                                                                                                                                              no-unused-vars
+  Line 321:6:   React Hook useEffect has an unnecessary dependency: 'bootSequence'. Either exclude it or remove the dependency array. Outer scope values like 'bootSequence' aren't valid dependencies because mutating them doesn't re-render the component  react-hooks/exhaustive-deps
+  Line 402:18:  Expected '===' and instead saw '=='                                                                                                                                                                                                           eqeqeq
+  Line 411:11:  'cam' is already defined                                                                                                                                                                                                                      no-redeclare
+  Line 503:5:   Unreachable code                                                                                                                                                                                                                              no-unreachable
+  Line 511:9:   'answer_query_no_face_search' is assigned a value but never used                                                                                                                                                                              no-unused-vars
+  Line 538:9:   'verify_camera_avs' is assigned a value but never used                                                                                                                                                                                        no-unused-vars
+
+src/CyberMap.js
+  Line 10:18:   'stringToHex' is defined but never used                no-unused-vars
+  Line 12:23:   'PIL_TYPE' is defined but never used                   no-unused-vars
+  Line 13:10:   'LicenseTerms' is defined but never used               no-unused-vars
+  Line 14:23:   'zeroHash' is defined but never used                   no-unused-vars
+  Line 17:5:    'DynamicContextProvider' is defined but never used     no-unused-vars
+  Line 21:5:    'createConfig' is defined but never used               no-unused-vars
+  Line 22:5:    'WagmiProvider' is defined but never used              no-unused-vars
+  Line 23:5:    'useAccount' is defined but never used                 no-unused-vars
+  Line 25:10:   'QueryClient' is defined but never used                no-unused-vars
+  Line 25:23:   'QueryClientProvider' is defined but never used        no-unused-vars
+  Line 25:44:   'infiniteQueryOptions' is defined but never used       no-unused-vars
+  Line 271:16:  'refreshTimestamp' is assigned a value but never used  no-unused-vars
+
+src/LoginPage.js
+  Line 7:10:  'isConnecting' is assigned a value but never used     no-unused-vars
+  Line 7:24:  'setIsConnecting' is assigned a value but never used  no-unused-vars
+
+ERROR in [eslint] 
+src/App.js
+  Line 142:26:  React Hook "useRef" is called conditionally. React Hooks must be called in the exact same order in every component render     react-hooks/rules-of-hooks
+  Line 143:29:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 144:29:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 145:37:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 146:43:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 147:37:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 148:39:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 149:50:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 150:50:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 151:33:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 152:49:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 156:51:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 157:41:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 158:35:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 168:28:  'setupStoryClient' is not defined                                                                                             no-undef
+  Line 178:32:  'zeroAddress' is not defined                                                                                                  no-undef
+  Line 179:36:  'zeroAddress' is not defined                                                                                                  no-undef
+  Line 193:24:  'zeroAddress' is not defined                                                                                                  no-undef
+  Line 194:19:  'zeroHash' is not defined                                                                                                     no-undef
+  Line 198:32:  'zeroAddress' is not defined                                                                                                  no-undef
+  Line 313:41:  React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render   react-hooks/rules-of-hooks
+  Line 317:3:   React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+  Line 323:3:   React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+  Line 335:3:   React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+  Line 355:3:   React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render  react-hooks/rules-of-hooks
+
+Search for the keywords to learn more about each error.
+
+webpack compiled with 1 error and 2 warnings
+The build failed because the process exited too early. This probably means the system ran out of memory or someone called `kill -9` on the process.

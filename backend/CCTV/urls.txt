@@ -1,0 +1,7 @@
+# Paste your CCTV webpage URLs here (one per line)
+# Lines starting with # are ignored
+
+# Example:
+https://camguide.net/usa/california/san-francisco/tennis/
+
+# Add more URLs below:

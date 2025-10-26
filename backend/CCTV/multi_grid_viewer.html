@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Feed CCTV Grid Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        .header-content {
+            max-width: 1920px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .header-btn {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        .header-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .add-stream-panel {
+            background: #2a2a2a;
+            padding: 20px;
+            max-width: 1920px;
+            margin: 20px auto;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .add-stream-panel.active {
+            display: block;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 12px;
+            background: #333;
+            border: 2px solid #444;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background: #667eea;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: #7689f0;
+            transform: translateY(-2px);
+        }
+        
+        .btn.secondary {
+            background: #444;
+        }
+        
+        .btn.secondary:hover {
+            background: #555;
+        }
+        
+        .grid-controls {
+            max-width: 1920px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .grid-btn {
+            padding: 10px 20px;
+            background: #333;
+            border: 2px solid #444;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .grid-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+        }
+        
+        .grid-container {
+            display: grid;
+            gap: 15px;
+            padding: 20px;
+            max-width: 1920px;
+            margin: 0 auto;
+            transition: all 0.3s;
+        }
+        
+        .grid-2x2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3x3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4x4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-auto { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+        
+        .stream-card {
+            background: #2a2a2a;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            transition: transform 0.2s;
+            position: relative;
+        }
+        
+        .stream-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.6);
+        }
+        
+        .stream-header {
+            background: #333;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stream-title {
+            font-size: 14px;
+            font-weight: 600;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .stream-badge {
+            background: #667eea;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .delete-btn {
+            background: #e74c3c;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .video-container {
+            position: relative;
+            background: #000;
+            aspect-ratio: 16/9;
+        }
+        
+        video, iframe {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border: none;
+        }
+        
+        .status-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            font-size: 14px;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .controls {
+            padding: 12px 15px;
+            background: #2a2a2a;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            flex: 1;
+            padding: 8px;
+            background: #444;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+        
+        .control-btn:hover {
+            background: #555;
+        }
+        
+        .control-btn.primary {
+            background: #667eea;
+        }
+        
+        .control-btn.primary:hover {
+            background: #7689f0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        
+        .empty-state h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 1024px) {
+            .grid-2x2, .grid-3x3, .grid-4x4 {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <h1>🎥 Multi-Feed CCTV Grid Viewer</h1>
+                <p style="font-size: 13px; opacity: 0.9; margin-top: 5px;">Supports M3U8, YouTube Live, RTSP & more</p>
+            </div>
+            <div class="header-controls">
+                <button class="header-btn" onclick="toggleAddPanel()">+ Add Stream</button>
+                <button class="header-btn" onclick="clearAll()">Clear All</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="add-stream-panel" id="addPanel">
+        <h3 style="margin-bottom: 15px;">Add New Stream</h3>
+        <div class="input-group">
+            <input type="text" id="streamUrl" placeholder="Paste stream URL here (M3U8, YouTube, RTSP, etc.)" />
+            <input type="text" id="streamName" placeholder="Stream name (optional)" />
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn" onclick="addStream()">Add Stream</button>
+            <button class="btn secondary" onclick="toggleAddPanel()">Cancel</button>
+        </div>
+        <div style="margin-top: 15px; font-size: 13px; color: #888;">
+            <strong>Supported formats:</strong><br>
+            • M3U8/HLS streams (.m3u8)<br>
+            • YouTube Live & Videos (youtube.com/watch?v=...)<br>
+            • RTSP streams (rtsp://...)<br>
+            • Direct video URLs (.mp4, .mjpeg)<br>
+            <br>
+            <strong>⚠️ YouTube Note:</strong> Many videos have restrictions (embedding disabled, age/region restrictions, playback errors). If you see any error, click the "📺 Open in YouTube" button to watch in a new tab.<br>
+            <strong>💡 Tip:</strong> Look for "24/7 live camera" streams - they usually work best!<br>
+            <br>
+            <strong>Tennis Courts stream is pre-loaded below!</strong>
+        </div>
+    </div>
+    
+    <div class="grid-controls">
+        <button class="grid-btn active" onclick="setGrid('auto')">Auto</button>
+        <button class="grid-btn" onclick="setGrid('2x2')">2×2</button>
+        <button class="grid-btn" onclick="setGrid('3x3')">3×3</button>
+        <button class="grid-btn" onclick="setGrid('4x4')">4×4</button>
+    </div>
+    
+    <div class="grid-container grid-auto" id="gridContainer">
+        <div class="empty-state">
+            <h2>No Streams Yet</h2>
+            <p>Click "+ Add Stream" to add your first CCTV feed</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        let streams = [];
+        let streamCounter = 0;
+        
+        // Pre-load Tennis Courts stream
+        window.addEventListener('load', function() {
+            addStreamWithUrl(
+                "https://stream-uc2-charlie.dropcam.com/nexus_aac/54d1f7859e9741448b240eb44e972098/chunklist_w2002435562.m3u8?public=aQAoqnQ5Af",
+                "Tennis Courts - San Francisco"
+            );
+        });
+        
+        function toggleAddPanel() {
+            const panel = document.getElementById('addPanel');
+            panel.classList.toggle('active');
+        }
+        
+        function setGrid(layout) {
+            const container = document.getElementById('gridContainer');
+            container.className = 'grid-container grid-' + layout;
+            
+            document.querySelectorAll('.grid-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function addStream() {
+            const url = document.getElementById('streamUrl').value.trim();
+            const name = document.getElementById('streamName').value.trim() || `Stream ${streamCounter + 1}`;
+            
+            if (!url) {
+                alert('Please enter a stream URL');
+                return;
+            }
+            
+            addStreamWithUrl(url, name);
+            
+            document.getElementById('streamUrl').value = '';
+            document.getElementById('streamName').value = '';
+            toggleAddPanel();
+        }
+        
+        function addStreamWithUrl(url, name) {
+            const id = streamCounter++;
+            let protocol = 'HTTP';
+            
+            if (url.includes('.m3u8')) {
+                protocol = 'HLS';
+            } else if (url.startsWith('rtsp://')) {
+                protocol = 'RTSP';
+            } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                protocol = 'YouTube';
+            }
+            
+            streams.push({ id, url, name, protocol });
+            renderStreams();
+        }
+        
+        function removeStream(id) {
+            streams = streams.filter(s => s.id !== id);
+            const hls = window[`hls_${id}`];
+            if (hls) {
+                hls.destroy();
+            }
+            renderStreams();
+        }
+        
+        function clearAll() {
+            if (confirm('Remove all streams?')) {
+                streams.forEach(s => {
+                    const hls = window[`hls_${s.id}`];
+                    if (hls) hls.destroy();
+                });
+                streams = [];
+                renderStreams();
+            }
+        }
+        
+        function renderStreams() {
+            const container = document.getElementById('gridContainer');
+            
+            if (streams.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>No Streams Yet</h2>
+                        <p>Click "+ Add Stream" to add your first CCTV feed</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            streams.forEach((stream, index) => {
+                const card = createStreamCard(stream, index);
+                container.appendChild(card);
+                setTimeout(() => {
+                    loadStream(stream.url, stream.id);
+                }, index * 300);
+            });
+        }
+        
+        function createStreamCard(stream, index) {
+            const card = document.createElement('div');
+            card.className = 'stream-card';
+            card.id = `card-${stream.id}`;
+            
+            const isYouTube = stream.protocol === 'YouTube';
+            const playerHtml = isYouTube 
+                ? `<iframe id="video-${stream.id}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+                : `<video id="video-${stream.id}" controls muted></video>`;
+            
+            card.innerHTML = `
+                <div class="stream-header">
+                    <div class="stream-title" title="${stream.name}">${stream.name}</div>
+                    <div style="display: flex; align-items: center;">
+                        <div class="stream-badge">${stream.protocol}</div>
+                        <div class="delete-btn" onclick="removeStream(${stream.id})">✕</div>
+                    </div>
+                </div>
+                <div class="video-container">
+                    ${playerHtml}
+                    <div class="status-overlay" id="status-${stream.id}">
+                        <div class="spinner"></div>
+                        <div>Loading stream...</div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="control-btn" onclick="reloadStream(${stream.id})">⟳ Reload</button>
+                    ${isYouTube ? `<button class="control-btn" onclick="openInYouTube(${stream.id})">📺 Open in YouTube</button>` : ''}
+                    <button class="control-btn primary" onclick="toggleFullscreen(${stream.id})">⛶ Fullscreen</button>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function extractYouTubeId(url) {
+            // Handle various YouTube URL formats
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/,
+                /youtube\.com\/embed\/([^&\n?#]+)/,
+                /youtube\.com\/v\/([^&\n?#]+)/,
+                /youtube\.com\/live\/([^&\n?#]+)/
+            ];
+            
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) {
+                    return match[1];
+                }
+            }
+            return null;
+        }
+        
+        function loadStream(streamUrl, id) {
+            const stream = streams.find(s => s.id === id);
+            const video = document.getElementById(`video-${id}`);
+            const status = document.getElementById(`status-${id}`);
+            
+            // Handle YouTube streams
+            if (stream && stream.protocol === 'YouTube') {
+                const videoId = extractYouTubeId(streamUrl);
+                if (videoId) {
+                    video.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+                    
+                    // Handle embedding errors
+                    video.onerror = function() {
+                        showYouTubeError(id);
+                    };
+                    
+                    // Monitor for playback errors (Error 153, playback errors, etc.)
+                    let errorCheckCount = 0;
+                    const checkInterval = setInterval(() => {
+                        errorCheckCount++;
+                        
+                        // Stop checking after 10 seconds
+                        if (errorCheckCount > 20) {
+                            clearInterval(checkInterval);
+                            return;
+                        }
+                        
+                        // Try to detect if iframe content has an error
+                        try {
+                            const iframeDoc = video.contentDocument || video.contentWindow?.document;
+                            if (iframeDoc) {
+                                const bodyText = iframeDoc.body?.innerText || '';
+                                if (bodyText.includes('error') || bodyText.includes('Error') || 
+                                    bodyText.includes('unavailable') || bodyText.includes('try again')) {
+                                    clearInterval(checkInterval);
+                                    showYouTubeError(id);
+                                }
+                            }
+                        } catch (e) {
+                            // Cross-origin restriction - can't access iframe content
+                            // This is normal, just means video might be loading
+                        }
+                        
+                        // If status is still showing after 5 seconds, likely an error
+                        if (errorCheckCount > 10 && status.style.display !== 'none') {
+                            clearInterval(checkInterval);
+                            status.style.display = 'none';
+                        }
+                    }, 500);
+                    
+                    // Hide loading after initial load
+                    setTimeout(() => {
+                        if (status.style.display !== 'none') {
+                            status.style.display = 'none';
+                        }
+                    }, 3000);
+                } else {
+                    status.innerHTML = '<div>Invalid YouTube URL</div>';
+                }
+                return;
+            }
+            
+            function showYouTubeError(streamId) {
+                const errorStatus = document.getElementById(`status-${streamId}`);
+                if (errorStatus) {
+                    errorStatus.style.display = 'flex';
+                    errorStatus.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 18px; margin-bottom: 10px;">⚠️ Can't Play Here</div>
+                            <div style="font-size: 13px; margin-bottom: 8px; opacity: 0.9;">This video has restrictions:</div>
+                            <div style="font-size: 11px; margin-bottom: 15px; opacity: 0.7;">
+                                • Embedding disabled<br>
+                                • Age restrictions<br>
+                                • Region restrictions<br>
+                                • Video unavailable
+                            </div>
+                            <button class="control-btn primary" onclick="openInYouTube(${streamId})" style="padding: 10px 20px; font-size: 14px;">📺 Watch on YouTube</button>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Handle HLS and other streams
+            if (Hls.isSupported()) {
+                const hls = new Hls({
+                    enableWorker: true,
+                    lowLatencyMode: false,
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 60,
+                    backBufferLength: 90,
+                    maxBufferSize: 60 * 1000 * 1000,
+                    maxBufferHole: 0.5,
+                    liveSyncDurationCount: 3,
+                    liveMaxLatencyDurationCount: 10
+                });
+                
+                hls.loadSource(streamUrl);
+                hls.attachMedia(video);
+                
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    status.style.display = 'none';
+                    video.play().catch(e => {
+                        status.innerHTML = '<div>Click to play</div>';
+                        status.style.cursor = 'pointer';
+                        status.onclick = () => {
+                            video.play();
+                            status.style.display = 'none';
+                        };
+                    });
+                });
+                
+                let recoverAttempts = 0;
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    console.log('HLS Error:', data);
+                    if (data.fatal) {
+                        recoverAttempts++;
+                        if (recoverAttempts < 5) {
+                            status.style.display = 'flex';
+                            status.innerHTML = `<div>Reconnecting... (${recoverAttempts}/5)</div>`;
+                            setTimeout(() => {
+                                if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+                                    hls.startLoad();
+                                } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+                                    hls.recoverMediaError();
+                                }
+                            }, 1000);
+                        } else {
+                            status.style.display = 'flex';
+                            status.innerHTML = '<div>Error loading stream</div><div style="font-size:11px;">Click Reload</div>';
+                        }
+                    }
+                });
+                
+                window[`hls_${id}`] = hls;
+                
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = streamUrl;
+                video.addEventListener('loadedmetadata', function() {
+                    status.style.display = 'none';
+                    video.play();
+                });
+                video.addEventListener('error', function() {
+                    status.innerHTML = '<div>Error loading stream</div>';
+                });
+            }
+        }
+        
+        function reloadStream(id) {
+            const stream = streams.find(s => s.id === id);
+            if (!stream) return;
+            
+            const hls = window[`hls_${id}`];
+            if (hls) {
+                hls.destroy();
+            }
+            
+            const video = document.getElementById(`video-${id}`);
+            const status = document.getElementById(`status-${id}`);
+            status.style.display = 'flex';
+            status.innerHTML = '<div class="spinner"></div><div>Reloading...</div>';
+            
+            setTimeout(() => {
+                loadStream(stream.url, id);
+            }, 500);
+        }
+        
+        function toggleFullscreen(id) {
+            const video = document.getElementById(`video-${id}`);
+            const container = video.parentElement;
+            
+            // Try fullscreen on container (works for both video and iframe)
+            if (container.requestFullscreen) {
+                container.requestFullscreen();
+            } else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
+            } else if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            }
+        }
+        
+        function openInYouTube(id) {
+            const stream = streams.find(s => s.id === id);
+            if (stream && stream.url) {
+                // Open YouTube URL in new tab
+                window.open(stream.url, '_blank');
+            }
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'a' && e.ctrlKey) {
+                e.preventDefault();
+                toggleAddPanel();
+            }
+        });
+    </script>
+</body>
+</html>
